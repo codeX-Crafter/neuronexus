@@ -12,11 +12,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.FabPosition
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import com.project.neuronexus.ui.VoiceTaskScreen
@@ -37,7 +32,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        WindowCompat.setDecorFitsSystemWindows(window, true)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
             NeuroNexusTheme {
@@ -54,29 +49,17 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(
                     floatingActionButton = {
-                        // SpeakerFab positioned just above bottom navbar
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 16.dp), // distance from bottom navbar
-                            verticalArrangement = Arrangement.Bottom,
-                            horizontalAlignment = Alignment.End // FAB on the right
-                        ) {
-                            SpeakerFab(textToRead = screenText)
-                        }
+                        SpeakerFab(textToRead = screenText)
                     },
-                    floatingActionButtonPosition = FabPosition.End // can also use Center
+                    floatingActionButtonPosition = FabPosition.End
                 ) { paddingValues ->
 
                     NavHost(
                         navController = navController,
                         startDestination = "dashboard",
                         modifier = Modifier
-                            .padding(
-                                top = 8.dp, // reduced top margin
-                                bottom = paddingValues.calculateBottomPadding()
-                            )
                             .fillMaxSize()
+                            .padding(paddingValues)
                     ) {
 
                         composable("dashboard") {

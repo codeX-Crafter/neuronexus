@@ -24,7 +24,7 @@ fun NeuroTopBar() {
         modifier = Modifier
             .fillMaxWidth()
             .background(Color(0xFFEDE7F6))
-            .statusBarsPadding() // 👈 Leaves space for status bar
+//            .statusBarsPadding()
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -34,7 +34,7 @@ fun NeuroTopBar() {
             contentDescription = "Logo",
             modifier = Modifier
                 .size(36.dp)
-                .clip(CircleShape), // 👈 Makes it circular
+                .clip(CircleShape),
             contentScale = ContentScale.Crop
         )
 

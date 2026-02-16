@@ -12,7 +12,7 @@ import com.project.neuronexus.tts.TtsController
 @Composable
 fun SpeakerFab(
     textToRead: String,
-    modifier: Modifier = Modifier // Add modifier parameter with default
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val ttsController = remember { TtsController(context) }
