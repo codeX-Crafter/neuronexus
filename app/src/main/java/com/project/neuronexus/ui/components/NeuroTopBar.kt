@@ -3,21 +3,20 @@ package com.project.neuronexus.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.project.neuronexus.R
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
-//import androidx.compose.material.icons.filled.Assignment
-
 
 @Composable
 fun NeuroTopBar() {
@@ -25,6 +24,7 @@ fun NeuroTopBar() {
         modifier = Modifier
             .fillMaxWidth()
             .background(Color(0xFFEDE7F6))
+            .statusBarsPadding() // 👈 Leaves space for status bar
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -32,7 +32,10 @@ fun NeuroTopBar() {
         Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = "Logo",
-            modifier = Modifier.size(36.dp)
+            modifier = Modifier
+                .size(36.dp)
+                .clip(CircleShape), // 👈 Makes it circular
+            contentScale = ContentScale.Crop
         )
 
         Spacer(modifier = Modifier.width(8.dp))

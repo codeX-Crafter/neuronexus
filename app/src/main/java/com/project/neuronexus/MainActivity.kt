@@ -3,17 +3,16 @@ package com.project.neuronexus
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.core.view.WindowCompat
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.core.view.WindowCompat
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.project.neuronexus.ui.VoiceTaskScreen
 import com.project.neuronexus.ui.VoiceTaskViewModel
-import com.project.neuronexus.ui.components.NeuroTopBar
-import com.project.neuronexus.ui.theme.NeuroNexusTheme
 import com.project.neuronexus.ui.dashboard.NeuroNexusDashboard
-
+import com.project.neuronexus.ui.tasks.TasksScreen
+import com.project.neuronexus.ui.theme.NeuroNexusTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -28,9 +27,34 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             NeuroNexusTheme {
-                NeuroNexusDashboard()
+
+                val navController = rememberNavController()
+
+                NavHost(
+                    navController = navController,
+                    startDestination = "dashboard"
+                ) {
+
+                    // -------- DASHBOARD --------
+                    composable("dashboard") {
+                        NeuroNexusDashboard(
+                            onTasksClick = {
+                                navController.navigate("tasks")
+                            }
+                        )
+                    }
+
+                    // -------- TASK LIST --------
+                    composable("tasks") {
+                        TasksScreen(navController = navController)
+                    }
+
+                    // -------- VOICE TASK --------
+                    composable("voice_task") {
+                        VoiceTaskScreen(viewModel = viewModel)
+                    }
+                }
             }
         }
     }
 }
-
