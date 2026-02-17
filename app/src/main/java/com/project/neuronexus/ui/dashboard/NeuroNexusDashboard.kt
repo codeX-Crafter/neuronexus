@@ -12,20 +12,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+//import androidx.compose.ui.layout.offset
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.project.neuronexus.ui.components.ActivityChart
 import com.project.neuronexus.ui.components.CustomBottomBar
 import com.project.neuronexus.ui.components.NeuroTopBar
+import com.project.neuronexus.ui.components.SpeakerFab
 
 @Composable
 fun NeuroNexusDashboard(
-    onTasksClick: () -> Unit
+    onTasksClick: () -> Unit,
+    dashboardText: String = "Welcome to your NeuroNexus dashboard. Points: 550 coins. Condition: All is well."
 ) {
     Scaffold(
         topBar = { NeuroTopBar() },
-        bottomBar = { CustomBottomBar() }
+        bottomBar = { CustomBottomBar() },
+        floatingActionButton = {
+            SpeakerFab(
+                textToRead = dashboardText,
+                modifier = Modifier.padding(bottom = 0.dp)
+
+            )
+        },
+        floatingActionButtonPosition = FabPosition.End
     ) { padding ->
 
         Column(
@@ -44,7 +55,6 @@ fun NeuroNexusDashboard(
                     .padding(20.dp)
             ) {
 
-                // -------- HEADER --------
                 Text(
                     text = "Dashboard",
                     style = MaterialTheme.typography.headlineSmall,
@@ -53,7 +63,6 @@ fun NeuroNexusDashboard(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // -------- STATUS SECTION --------
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -73,12 +82,10 @@ fun NeuroNexusDashboard(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // -------- ACTIVITY CHART --------
                 ActivityChart()
 
                 Spacer(modifier = Modifier.height(28.dp))
 
-                // -------- TASKS SECTION --------
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,

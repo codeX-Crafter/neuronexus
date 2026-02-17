@@ -5,77 +5,88 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.project.neuronexus.ui.components.CustomBottomBar
+import com.project.neuronexus.ui.components.NeuroTopBar
+import com.project.neuronexus.ui.components.SpeakerFab
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TasksScreen(navController: NavController) {
+fun TasksScreen(
+    navController: NavController,
+    tasksText: String = "This is the tasks screen. You can choose activities like memory match, trail making, reading test and face capture."
+) {
     Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("Tasks", fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.White
-                )
+        topBar = { NeuroTopBar() },
+        bottomBar = { CustomBottomBar() },
+        floatingActionButton = {
+            SpeakerFab(
+                textToRead = tasksText,
+                modifier = Modifier.padding(bottom = 0.dp)
             )
-        }
+        },
+        floatingActionButtonPosition = FabPosition.End
     ) { padding ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(Color.White)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .background(Color(0xFFF3E5F5))
         ) {
 
-            // ✅ Memory Match navigates
-            TaskItem(
-                title = "Memory Match",
-                description = "Learn and recall a list of words across multiple trials.",
-                bgColor = Color(0xFFD1FADF),
-                onStartClick = {
-                    navController.navigate("memory_match")
-                }
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
+                    .background(Color.White)
+                    .verticalScroll(rememberScrollState())
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
 
-            // Other tasks (no navigation yet)
-            TaskItem(
-                title = "Trail Making",
-                description = "Connect the dots in numerical and alphabetical order.",
-                bgColor = Color(0xFFD1E9FF),
-                onStartClick = { }
-            )
+                Text(
+                    text = "Tasks",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
 
-            TaskItem(
-                title = "Reading Test",
-                description = "Read the text aloud to evaluate speech and fluency.",
-                bgColor = Color(0xFFFFE4F2),
-                onStartClick = { }
-            )
+                TaskItem(
+                    title = "Memory Match",
+                    description = "Learn and recall a list of words across multiple trials.",
+                    bgColor = Color(0xFFD1FADF),
+                    onStartClick = {
+                        navController.navigate("memory_match")
+                    }
+                )
 
-            TaskItem(
-                title = "Face Capture",
-                description = "Perform facial expressions to assess motor function.",
-                bgColor = Color(0xFFFEF9C3),
-                onStartClick = { }
-            )
+                TaskItem(
+                    title = "Trail Making",
+                    description = "Connect the dots in numerical and alphabetical order.",
+                    bgColor = Color(0xFFD1E9FF),
+                    onStartClick = { }
+                )
+
+                TaskItem(
+                    title = "Reading Test",
+                    description = "Read the text aloud to evaluate speech and fluency.",
+                    bgColor = Color(0xFFFFE4F2),
+                    onStartClick = { }
+                )
+
+                TaskItem(
+                    title = "Face Capture",
+                    description = "Perform facial expressions to assess motor function.",
+                    bgColor = Color(0xFFFEF9C3),
+                    onStartClick = { }
+                )
+            }
         }
     }
 }
@@ -96,7 +107,7 @@ fun TaskItem(
 
             Text(
                 text = title,
-                fontSize = 20.sp,
+                style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF1D2939)
             )
@@ -105,7 +116,7 @@ fun TaskItem(
 
             Text(
                 text = description,
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.bodyMedium,
                 color = Color(0xFF475467)
             )
 

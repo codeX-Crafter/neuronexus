@@ -28,7 +28,7 @@ fun CustomBottomBar() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-//            .navigationBarsPadding()
+            .navigationBarsPadding()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clip(RoundedCornerShape(24.dp))
             .background(Color(0xFFD1C4E9))

@@ -24,7 +24,7 @@ fun NeuroTopBar() {
         modifier = Modifier
             .fillMaxWidth()
             .background(Color(0xFFEDE7F6))
-//            .statusBarsPadding()
+            .statusBarsPadding()
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
