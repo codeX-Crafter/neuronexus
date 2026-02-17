@@ -14,12 +14,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.project.neuronexus.R
+import androidx.navigation.NavController
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 
 @Composable
-fun NeuroTopBar() {
+fun NeuroTopBar(navController: NavController? = null) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -48,8 +49,12 @@ fun NeuroTopBar() {
             Icon(Icons.Default.Notifications, contentDescription = null)
         }
 
-        IconButton(onClick = {}) {
-            Icon(Icons.Default.Person, contentDescription = null)
+        IconButton(
+            onClick = {
+                navController?.navigate("profile")
+            }
+        ) {
+            Icon(Icons.Default.Person, contentDescription = "Profile")
         }
     }
 }

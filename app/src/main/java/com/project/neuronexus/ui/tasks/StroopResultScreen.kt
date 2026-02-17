@@ -24,7 +24,7 @@ import com.project.neuronexus.ui.components.NeuroTopBar
 import com.project.neuronexus.ui.components.SpeakerFab
 
 @Composable
-fun RecallResultScreen(
+fun StroopResultScreen(
     navController: NavController,
     score: Int,
     timeSeconds: Int
@@ -70,7 +70,7 @@ fun RecallResultScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // Score circle
+                // Time circle (same style as recall score circle)
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
@@ -78,7 +78,7 @@ fun RecallResultScreen(
                         .background(Color(0xFFB39DDB), shape = CircleShape)
                 ) {
                     Text(
-                        text = "Score\n$score/$totalQuestions",
+                        text = "Time\n$formattedTime",
                         color = Color.White,
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold
@@ -88,17 +88,17 @@ fun RecallResultScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "✕ $errors Errors",
-                    color = Color(0xFFD32F2F),
+                    text = "Score: $score/$totalQuestions",
+                    color = Color(0xFF6B4E8E),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
-                    text = "Average Time\nTaken - $formattedTime",
-                    color = Color(0xFF6B4E8E),
+                    text = "✕ $errors Errors",
+                    color = Color(0xFFD32F2F),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -169,7 +169,6 @@ fun RecallResultScreen(
             )
         }
 
-        // 🔊 Read-aloud FAB
         SpeakerFab(
             textToRead = resultText,
             modifier = Modifier

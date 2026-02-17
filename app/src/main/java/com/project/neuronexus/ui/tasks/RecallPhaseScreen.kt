@@ -8,6 +8,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -18,12 +20,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.project.neuronexus.R
+import com.project.neuronexus.tts.TtsController
 import com.project.neuronexus.ui.components.CustomBottomBar
 import com.project.neuronexus.ui.components.NeuroTopBar
+
 @Composable
 fun RecallPhaseScreen(navController: NavController) {
+
+    val screenText =
+        "Now you will be asked some questions about what you remember. Answer each question by choosing the correct option. Press Next to continue."
+
+    // 🔊 TTS setup
+    val context = LocalContext.current
+    val ttsController = remember { TtsController(context) }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            ttsController.shutdown()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -126,9 +144,9 @@ fun RecallPhaseScreen(navController: NavController) {
                     )
                 }
 
-                // Sound FAB
+                // 🔊 Sound FAB now reads instructions
                 FloatingActionButton(
-                    onClick = { },
+                    onClick = { ttsController.speak(screenText) },
                     containerColor = Color(0xFF8E6BAF),
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
@@ -146,7 +164,8 @@ fun RecallPhaseScreen(navController: NavController) {
         CustomBottomBar(
             onHomeClick = { navController.navigate("dashboard") },
             onTasksClick = { navController.navigate("tasks") },
-            onSettingsClick = { /* TODO: navigate to settings */ },
+            onSettingsClick = { },
             onShareClick = { navController.navigate("community") }
-        )    }
+        )
+    }
 }

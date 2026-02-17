@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -20,15 +21,12 @@ import com.project.neuronexus.R
 import com.project.neuronexus.ui.components.CustomBottomBar
 import com.project.neuronexus.ui.components.NeuroTopBar
 import com.project.neuronexus.ui.components.SpeakerFab
-import androidx.compose.ui.platform.LocalConfiguration
 
 @Composable
-fun MemoryMatchScreen(navController: NavController) {
-    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+fun StroopIntroScreen(navController: NavController) {
 
-    val readAloudText =
-        "Memory Match. You will be shown pictures with names. Try to remember each pair. Later you will be asked to match the correct name with its picture."
+    val screenText =
+        "Focus on the word shown on the screen. Your task is to select the color of the letters, not the word itself. Respond as quickly and accurately as you can."
 
     Box(
         modifier = Modifier
@@ -36,11 +34,9 @@ fun MemoryMatchScreen(navController: NavController) {
             .background(Color(0xFFF4F1F8))
     ) {
 
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
+        Column(modifier = Modifier.fillMaxSize()) {
 
-            // 🔹 Your existing top bar
+            // Top bar
             NeuroTopBar()
 
             Column(
@@ -53,7 +49,7 @@ fun MemoryMatchScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Text(
-                    text = "MEMORY MATCH",
+                    text = "STROOP TEST",
                     fontSize = 26.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF6B4E8E)
@@ -63,12 +59,15 @@ fun MemoryMatchScreen(navController: NavController) {
 
                 Card(
                     shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = "You will be shown pictures with names. Try to remember each pair. Later you’ll be asked to match the correct name with its picture.",
+                        text = screenText,
                         modifier = Modifier.padding(16.dp),
-                        textAlign = TextAlign.Center
+                        fontSize = 15.sp,
+                        textAlign = TextAlign.Center,
+                        color = Color.DarkGray
                     )
                 }
 
@@ -77,11 +76,10 @@ fun MemoryMatchScreen(navController: NavController) {
                 BoxWithConstraints(
                     modifier = Modifier.fillMaxSize()
                 ) {
-
                     val boxWidth = maxWidth
                     val boxHeight = maxHeight
 
-                    // 🔹 Mascot Image
+                    // Mascot
                     Image(
                         painter = painterResource(id = R.drawable.mascot_img),
                         contentDescription = "Mascot",
@@ -95,9 +93,11 @@ fun MemoryMatchScreen(navController: NavController) {
                         contentScale = ContentScale.Crop
                     )
 
-                    // 🔹 Start Button
+                    // Start button
                     Button(
-                        onClick = { navController.navigate("memory_preview") },
+                        onClick = {
+                            navController.navigate("stroop_game")
+                        },
                         shape = RoundedCornerShape(50),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFB39DDB)
@@ -106,9 +106,7 @@ fun MemoryMatchScreen(navController: NavController) {
                             .height(55.dp)
                             .width(170.dp)
                             .align(Alignment.CenterEnd)
-                            .offset(
-                                y = boxHeight * (-0.32f)
-                            )
+                            .offset(y = boxHeight * (-0.32f))
                             .padding(end = 32.dp)
                     ) {
                         Text(
@@ -121,6 +119,7 @@ fun MemoryMatchScreen(navController: NavController) {
                 }
             }
 
+            // Bottom bar
             CustomBottomBar(
                 onHomeClick = { navController.navigate("dashboard") },
                 onTasksClick = { navController.navigate("tasks") },
@@ -129,9 +128,9 @@ fun MemoryMatchScreen(navController: NavController) {
             )
         }
 
-        // 🔊 Read-aloud FAB (added only this)
+        // 🔊 Read-aloud FAB
         SpeakerFab(
-            textToRead = readAloudText,
+            textToRead = screenText,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(end = 16.dp, bottom = 80.dp)

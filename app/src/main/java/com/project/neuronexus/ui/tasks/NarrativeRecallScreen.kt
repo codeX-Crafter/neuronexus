@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -16,121 +18,132 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.project.neuronexus.R
+import com.project.neuronexus.tts.TtsController
 import com.project.neuronexus.ui.components.CustomBottomBar
 import com.project.neuronexus.ui.components.NeuroTopBar
-import androidx.compose.material.icons.Icons
-
+import com.project.neuronexus.ui.components.SpeakerFab
 
 @Composable
 fun NarrativeRecallScreen(navController: NavController) {
 
-    Column(
+    val screenText =
+        "Listen carefully to the short story. After the story, you will be asked some questions. Answer each question."
+
+    // 🔊 TTS setup (same system as SpeakerFab)
+    val context = LocalContext.current
+    val ttsController = remember { TtsController(context) }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            ttsController.shutdown()
+        }
+    }
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF4F1F8))
     ) {
 
-        NeuroTopBar()
-
         Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.fillMaxSize()
         ) {
 
-            Spacer(modifier = Modifier.height(20.dp))
+            NeuroTopBar()
 
-            Text(
-                text = "NARRATIVE RECALL",
-                fontSize = 26.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF6B4E8E)
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Card(
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White)
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
+                Spacer(modifier = Modifier.height(20.dp))
+
                 Text(
-                    text = "Listen carefully to the short story. After the story, you will be asked some questions. Answer each question aloud. Press the microphone to start and stop recording. When finished, press Next.",
-                    modifier = Modifier.padding(16.dp),
-                    textAlign = TextAlign.Center
-                )
-            }
-
-            Spacer(modifier = Modifier.height(40.dp))
-
-            BoxWithConstraints(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                val boxWidth = maxWidth
-                val boxHeight = maxHeight
-
-                // Mascot
-                Image(
-                    painter = painterResource(id = R.drawable.mascot_img),
-                    contentDescription = "Mascot",
-                    modifier = Modifier
-                        .size(boxWidth * 1.3f)
-                        .align(Alignment.BottomStart)
-                        .offset(
-                            x = boxWidth * (-0.09f),
-                            y = boxHeight * (-0.05f)
-                        ),
-                    contentScale = ContentScale.Crop
+                    text = "NARRATIVE RECALL",
+                    fontSize = 26.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF6B4E8E)
                 )
 
-                // Start button
-                Button(
-                    onClick = {
-                        navController.navigate("story")
-                    },
-                    shape = RoundedCornerShape(50),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFB39DDB)
-                    ),
-                    modifier = Modifier
-                        .height(55.dp)
-                        .width(170.dp)
-                        .align(Alignment.CenterEnd)
-                        .offset(y = boxHeight * (-0.32f))
-                        .padding(end = 32.dp)
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Card(
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White)
                 ) {
                     Text(
-                        text = "START",
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        fontSize = 18.sp
+                        text = "Listen carefully to the short story. After the story, you will be asked some questions. Answer each question by choosing the correct option. When finished, press Next.",
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Center
                     )
                 }
 
-                // Sound FAB
-                FloatingActionButton(
-                    onClick = { },
-                    containerColor = Color(0xFF8E6BAF),
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(16.dp)
+                Spacer(modifier = Modifier.height(40.dp))
+
+                BoxWithConstraints(
+                    modifier = Modifier.fillMaxSize()
                 ) {
-//                    Icon(
-//                        imageVector = Icons.Default.VolumeUp,
-//                        contentDescription = "Sound",
-//                        tint = Color.White
-//                    )
+                    val boxWidth = maxWidth
+                    val boxHeight = maxHeight
+
+                    Image(
+                        painter = painterResource(id = R.drawable.mascot_img),
+                        contentDescription = "Mascot",
+                        modifier = Modifier
+                            .size(boxWidth * 1.3f)
+                            .align(Alignment.BottomStart)
+                            .offset(
+                                x = boxWidth * (-0.09f),
+                                y = boxHeight * (-0.05f)
+                            ),
+                        contentScale = ContentScale.Crop
+                    )
+
+                    Button(
+                        onClick = {
+                            ttsController.speak(screenText)
+                            navController.navigate("story")
+                        },
+                        shape = RoundedCornerShape(50),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFB39DDB)
+                        ),
+                        modifier = Modifier
+                            .height(55.dp)
+                            .width(170.dp)
+                            .align(Alignment.CenterEnd)
+                            .offset(y = boxHeight * (-0.32f))
+                            .padding(end = 32.dp)
+                    ) {
+                        Text(
+                            text = "START",
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            fontSize = 18.sp
+                        )
+                    }
                 }
             }
+
+            CustomBottomBar(
+                onHomeClick = { navController.navigate("dashboard") },
+                onTasksClick = { navController.navigate("tasks") },
+                onSettingsClick = { },
+                onShareClick = { navController.navigate("community") }
+            )
         }
 
-        CustomBottomBar(
-            onHomeClick = { navController.navigate("dashboard") },
-            onTasksClick = { navController.navigate("tasks") },
-            onSettingsClick = { /* TODO: navigate to settings */ },
-            onShareClick = { navController.navigate("community") }
+        // 🔊 Speaker FAB overlay (unchanged)
+        SpeakerFab(
+            textToRead = screenText,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 16.dp, bottom = 80.dp)
         )
     }
 }
