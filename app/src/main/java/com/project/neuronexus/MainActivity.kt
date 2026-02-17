@@ -15,6 +15,10 @@ import com.project.neuronexus.ui.tasks.TasksScreen
 import com.project.neuronexus.ui.tasks.MemoryMatchScreen
 import com.project.neuronexus.ui.community.CommunityPage
 import com.project.neuronexus.ui.theme.NeuroNexusTheme
+import com.project.neuronexus.ui.tasks.NarrativeRecallScreen
+import com.project.neuronexus.ui.tasks.StoryScreen
+import com.project.neuronexus.ui.tasks.RecallPhaseScreen
+import com.project.neuronexus.ui.tasks.RecallQuestionScreen
 
 class MainActivity : ComponentActivity() {
 
@@ -31,7 +35,6 @@ class MainActivity : ComponentActivity() {
             NeuroNexusTheme {
 
                 val navController = rememberNavController()
-
                 NavHost(
                     navController = navController,
                     startDestination = "dashboard"
@@ -57,6 +60,11 @@ class MainActivity : ComponentActivity() {
                         MemoryMatchScreen(navController = navController)
                     }
 
+                    // -------- NARRATIVE RECALL --------
+                    composable("narrative_recall") {
+                        NarrativeRecallScreen(navController)
+                    }
+
                     // -------- VOICE TASK --------
                     composable("voice_task") {
                         VoiceTaskScreen(
@@ -64,12 +72,23 @@ class MainActivity : ComponentActivity() {
                             viewModel = viewModel
                         )
                     }
+                    composable("story") {
+                        StoryScreen(navController)
+                    }
+                    composable("recall_phase") {
+                        RecallPhaseScreen(navController)
+                    }
+                    composable("recall_question") {
+                        RecallQuestionScreen(navController)
+                    }
+
 
                     // -------- COMMUNITY PAGE --------
                     composable("community") {
                         CommunityPage(navController = navController)
                     }
                 }
+
             }
         }
     }
