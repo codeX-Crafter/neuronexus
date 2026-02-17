@@ -27,6 +27,22 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.project.neuronexus.ui.tasks.MemoryScoreScreen
+import com.project.neuronexus.ui.tasks.StroopIntroScreen
+import com.project.neuronexus.ui.tasks.StroopGameScreen
+import com.project.neuronexus.ui.tasks.StroopResultScreen
+import com.project.neuronexus.ui.auth.LoginScreen
+import com.project.neuronexus.ui.auth.LoadingScreen
+import com.project.neuronexus.ui.auth.AvatarSelectionScreen
+import com.project.neuronexus.ui.auth.SignupProfileScreen
+import com.project.neuronexus.ui.auth.SignupInsuranceScreen
+import com.project.neuronexus.ui.auth.SignupHealthScreen
+import com.project.neuronexus.ui.auth.SignupContactScreen
+import com.project.neuronexus.ui.auth.SignupPersonalScreen
+import com.project.neuronexus.ui.auth.RoleSelectionScreen
+import com.project.neuronexus.ui.auth.WelcomeScreen
+import com.project.neuronexus.ui.profile.ProfileScreen
+import androidx.navigation.NavController
+
 
 
 class MainActivity : ComponentActivity() {
@@ -46,12 +62,14 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = "dashboard"
+                    startDestination = "welcome"
                 ) {
 
                     // -------- DASHBOARD --------
                     composable("dashboard") {
+
                         NeuroNexusDashboard(
+                            navController = navController,
                             onHomeClick = { navController.navigate("dashboard") },
                             onTasksClick = { navController.navigate("tasks") },
                             onSettingsClick = { /* TODO: navigate to settings */ },
@@ -98,10 +116,19 @@ class MainActivity : ComponentActivity() {
                     composable("recall_question") {
                         RecallQuestionScreen(navController)
                     }
-                    composable("recall_result/{score}") { backStackEntry ->
-                        val score = backStackEntry.arguments?.getString("score")?.toInt() ?: 0
-                        RecallResultScreen(navController, score)
+                    composable("recall_result/{score}/{time}") { backStackEntry ->
+
+                        val score = backStackEntry.arguments
+                            ?.getString("score")
+                            ?.toIntOrNull() ?: 0
+
+                        val time = backStackEntry.arguments
+                            ?.getString("time")
+                            ?.toIntOrNull() ?: 0
+
+                        RecallResultScreen(navController, score, time)
                     }
+
 
                     composable("memory_mcq") {
                         MemoryMcqScreen(navController)
@@ -115,6 +142,34 @@ class MainActivity : ComponentActivity() {
                         MemoryScoreScreen(navController, score)
                     }
 
+
+                    composable("stroop_intro") {
+                        StroopIntroScreen(navController)
+                    }
+
+                    composable("stroop_game") {
+                        StroopGameScreen(navController)
+                    }
+
+                    composable("stroop_result/{score}/{time}") { backStackEntry ->
+                        val score = backStackEntry.arguments?.getString("score")?.toInt() ?: 0
+                        val time = backStackEntry.arguments?.getString("time")?.toInt() ?: 0
+                        StroopResultScreen(navController, score, time)
+                    }
+
+                    composable("welcome") { WelcomeScreen(navController) }
+                    composable("role_select") { RoleSelectionScreen(navController) }
+                    composable("signup_personal") { SignupPersonalScreen(navController) }
+                    composable("signup_contact") { SignupContactScreen(navController) }
+                    composable("signup_health") { SignupHealthScreen(navController) }
+                    composable("signup_insurance") { SignupInsuranceScreen(navController) }
+                    composable("signup_profile") { SignupProfileScreen(navController) }
+                    composable("avatar_select") { AvatarSelectionScreen(navController) }
+                    composable("loading") { LoadingScreen(navController) }
+                    composable("login") { LoginScreen(navController) }
+                    composable("profile") {
+                        ProfileScreen(navController)
+                    }
 
 
 

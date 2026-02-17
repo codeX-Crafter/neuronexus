@@ -5,23 +5,34 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.project.neuronexus.tts.TtsController
 import com.project.neuronexus.ui.components.CustomBottomBar
 import com.project.neuronexus.ui.components.NeuroTopBar
-
 @Composable
 fun StoryScreen(navController: NavController) {
+
+    val context = LocalContext.current
+    val ttsController = remember { TtsController(context) }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            ttsController.shutdown()
+        }
+    }
+
+    val storyText = "One evening, a little girl named Riya found a small puppy near the park. The puppy was shivering because it was cold. Riya gave the puppy some biscuits and carried it home. Her mother agreed to let the puppy stay until they found its owner. The next day, they put up posters around the neighborhood. By evening, a young boy came and happily hugged the puppy — it was his lost pet named Bruno. Riya felt both sad and happy, knowing the puppy was back with its family."
 
     Column(
         modifier = Modifier
@@ -29,7 +40,6 @@ fun StoryScreen(navController: NavController) {
             .background(Color(0xFFF4F1F8))
     ) {
 
-        // Top bar
         NeuroTopBar()
 
         Column(
@@ -56,7 +66,7 @@ fun StoryScreen(navController: NavController) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "“One evening, a little girl named Riya found a small puppy near the park. The puppy was shivering because it was cold. Riya gave the puppy some biscuits and carried it home. Her mother agreed to let the puppy stay until they found its owner. The next day, they put up posters around the neighborhood. By evening, a young boy came and happily hugged the puppy — it was his lost pet named Bruno. Riya felt both sad and happy, knowing the puppy was back with its family.”",
+                    text = storyText,
                     modifier = Modifier.padding(18.dp),
                     fontSize = 14.sp,
                     fontStyle = FontStyle.Italic,
@@ -78,7 +88,7 @@ fun StoryScreen(navController: NavController) {
             // Read Aloud button
             Button(
                 onClick = {
-                    navController.navigate("recall_phase")
+                    ttsController.speak(storyText)
                 },
                 shape = RoundedCornerShape(50),
                 colors = ButtonDefaults.buttonColors(
@@ -102,33 +112,37 @@ fun StoryScreen(navController: NavController) {
                 )
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(12.dp))
 
-            // Sound FAB bottom-right
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+            // Done button
+            Button(
+                onClick = {
+                    navController.navigate("recall_phase")
+                },
+                shape = RoundedCornerShape(50),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF8E6BAF)
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
             ) {
-                FloatingActionButton(
-                    onClick = { },
-                    containerColor = Color(0xFF8E6BAF),
-                    modifier = Modifier.size(68.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.VolumeUp,
-                        contentDescription = "Sound",
-                        tint = Color.White,
-                        modifier = Modifier.size(30.dp)
-                    )
-                }
+                Text(
+                    text = "Done",
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    fontSize = 17.sp
+                )
             }
+
+            Spacer(modifier = Modifier.weight(1f))
         }
 
-        // Bottom bar
         CustomBottomBar(
             onHomeClick = { navController.navigate("dashboard") },
             onTasksClick = { navController.navigate("tasks") },
-            onSettingsClick = { /* TODO: navigate to settings */ },
+            onSettingsClick = { },
             onShareClick = { navController.navigate("community") }
-        )    }
+        )
+    }
 }

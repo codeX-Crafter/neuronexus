@@ -19,9 +19,11 @@ import com.project.neuronexus.ui.components.ActivityChart
 import com.project.neuronexus.ui.components.CustomBottomBar
 import com.project.neuronexus.ui.components.NeuroTopBar
 import com.project.neuronexus.ui.components.SpeakerFab
+import androidx.navigation.NavController
 
 @Composable
 fun NeuroNexusDashboard(
+    navController: NavController,
     onTasksClick: () -> Unit,
     onHomeClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {},
@@ -29,7 +31,7 @@ fun NeuroNexusDashboard(
     dashboardText: String = "Welcome to your NeuroNexus dashboard. Points: 550 coins. Condition: All is well."
 ) {
     Scaffold(
-        topBar = { NeuroTopBar() },
+        topBar = {NeuroTopBar(navController) },
         bottomBar = {
             CustomBottomBar(
                 onHomeClick = onHomeClick,
@@ -118,9 +120,9 @@ fun NeuroNexusDashboard(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 DashboardTaskRow("Memory Match", Color(0xFFD1FADF))
-                DashboardTaskRow("Trail Making", Color(0xFFD1E9FF))
-                DashboardTaskRow("Reading Test", Color(0xFFFFE4F2))
-                DashboardTaskRow("Face Capture", Color(0xFFFEF9C3))
+                DashboardTaskRow("Stroop Test", Color(0xFFD1E9FF))
+                DashboardTaskRow("Narrative Recall", Color(0xFFFFE4F2))
+                DashboardTaskRow("Reading Test", Color(0xFFFEF9C3))
             }
         }
     }

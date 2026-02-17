@@ -40,16 +40,19 @@ fun MemoryPreviewScreen(navController: NavController) {
     var textToSpeech by remember { mutableStateOf<TextToSpeech?>(null) }
 
 
-    val memoryList = listOf(
-        MemoryItem(R.drawable.person1, "Ross"),
-        MemoryItem(R.drawable.person2, "Rachel"),
-        MemoryItem(R.drawable.person3, "Monica"),
-        MemoryItem(R.drawable.person4, "Chandler"),
-//        MemoryItem(R.drawable.person5, "Joey"),
-//        MemoryItem(R.drawable.person6, "Phoebe"),
-//        MemoryItem(R.drawable.person7, "Mike"),
-//        MemoryItem(R.drawable.person8, "Janice")
+    val memoryData = listOf(
+        MemoryItem(R.drawable.person_ross, "Ross"),
+        MemoryItem(R.drawable.person_rachel, "Rachel"),
+        MemoryItem(R.drawable.person_monica, "Monica"),
+        MemoryItem(R.drawable.person_chandler, "Chandler")
     )
+    val memoryList = listOf(
+        MemoryItem(R.drawable.person_ross, "Ross"),
+        MemoryItem(R.drawable.person_rachel, "Rachel"),
+        MemoryItem(R.drawable.person_monica, "Monica"),
+        MemoryItem(R.drawable.person_chandler, "Chandler")
+    )
+
 
     var currentIndex by remember { mutableStateOf(0) }
 

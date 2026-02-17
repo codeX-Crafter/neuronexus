@@ -18,29 +18,36 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.project.neuronexus.R
 import com.project.neuronexus.ui.components.NeuroTopBar
-
+import android.speech.tts.TextToSpeech
+import androidx.compose.ui.platform.LocalContext
+import java.util.Locale
+import androidx.compose.runtime.DisposableEffect
+import com.project.neuronexus.ui.components.SpeakerFab
 @Composable
 fun MemoryMcqScreen(navController: NavController) {
+
+    val context = LocalContext.current
+    var textToSpeech by remember { mutableStateOf<TextToSpeech?>(null) }
 
     val questionList = remember {
         listOf(
             RecallQuestionMem(
-                R.drawable.person1,
+                R.drawable.person_ross,
                 "Ross",
                 listOf("Mike", "Ross", "Alen", "Max").shuffled()
             ),
             RecallQuestionMem(
-                R.drawable.person2,
+                R.drawable.person_rachel,
                 "Rachel",
                 listOf("Rachel", "Monica", "Lily", "Emma").shuffled()
             ),
             RecallQuestionMem(
-                R.drawable.person3,
+                R.drawable.person_monica,
                 "Monica",
                 listOf("Phoebe", "Monica", "Nina", "Sara").shuffled()
             ),
             RecallQuestionMem(
-                R.drawable.person4,
+                R.drawable.person_chandler,
                 "Chandler",
                 listOf("Ross", "Chandler", "Mike", "David").shuffled()
             )
@@ -54,98 +61,128 @@ fun MemoryMcqScreen(navController: NavController) {
 
     val currentQuestion = questionList[currentIndex]
 
-    Column(
+    // TTS init
+    LaunchedEffect(Unit) {
+        textToSpeech = TextToSpeech(context) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                textToSpeech?.language = Locale.US
+            }
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            textToSpeech?.stop()
+            textToSpeech?.shutdown()
+        }
+    }
+
+    val readText =
+        "Select the correct name for the person shown in the picture."
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF4F1F8))
     ) {
 
-        // 🔹 Top Bar
-        NeuroTopBar()
-
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.fillMaxSize()
         ) {
 
+            NeuroTopBar()
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Image(
-            painter = painterResource(currentQuestion.imageRes),
-            contentDescription = null,
-            modifier = Modifier
-                .size(140.dp)
-                .clip(CircleShape)
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        LinearProgressIndicator(
-            progress = (currentIndex + 1) / questionList.size.toFloat(),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Text("${currentIndex + 1} of ${questionList.size}")
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        // OPTIONS
-        currentQuestion.options.forEach { option ->
-
-            val backgroundColor = when {
-                showAnswer && option == currentQuestion.correctAnswer -> Color(0xFF81C784) // GREEN
-                showAnswer && option == selectedAnswer && option != currentQuestion.correctAnswer -> Color(0xFFE57373) // RED
-                selectedAnswer == option -> Color(0xFFB39DDB)
-                else -> Color.LightGray
-            }
-
-            Button(
-                onClick = {
-                    if (!showAnswer) {
-                        selectedAnswer = option
-                    }
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
-                shape = RoundedCornerShape(16.dp),
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 6.dp)
+                    .fillMaxSize()
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(option)
-            }
-        }
 
-        Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-        Button(
-            onClick = {
-                if (!showAnswer) {
-                    showAnswer = true
-                    if (selectedAnswer == currentQuestion.correctAnswer) {
-                        score++
+                Image(
+                    painter = painterResource(currentQuestion.imageRes),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(140.dp)
+                        .clip(CircleShape)
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                LinearProgressIndicator(
+                    progress = (currentIndex + 1) / questionList.size.toFloat(),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text("${currentIndex + 1} of ${questionList.size}")
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                currentQuestion.options.forEach { option ->
+
+                    val backgroundColor = when {
+                        showAnswer && option == currentQuestion.correctAnswer -> Color(0xFF81C784)
+                        showAnswer && option == selectedAnswer && option != currentQuestion.correctAnswer -> Color(0xFFE57373)
+                        selectedAnswer == option -> Color(0xFFB39DDB)
+                        else -> Color.LightGray
                     }
-                } else {
-                    if (currentIndex < questionList.lastIndex) {
-                        currentIndex++
-                        selectedAnswer = null
-                        showAnswer = false
-                    } else {
-                        navController.navigate("memory_score/$score")
+
+                    Button(
+                        onClick = {
+                            if (!showAnswer) {
+                                selectedAnswer = option
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
+                        shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 6.dp)
+                    ) {
+                        Text(option)
                     }
                 }
-            },
-            enabled = selectedAnswer != null,
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFB39DDB)
-            )
-        ) {
-            Text(if (showAnswer) "NEXT" else "CHECK")
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Button(
+                    onClick = {
+                        if (!showAnswer) {
+                            showAnswer = true
+                            if (selectedAnswer == currentQuestion.correctAnswer) {
+                                score++
+                            }
+                        } else {
+                            if (currentIndex < questionList.lastIndex) {
+                                currentIndex++
+                                selectedAnswer = null
+                                showAnswer = false
+                            } else {
+                                navController.navigate("memory_score/$score")
+                            }
+                        }
+                    },
+                    enabled = selectedAnswer != null,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFB39DDB)
+                    )
+                ) {
+                    Text(if (showAnswer) "NEXT" else "CHECK")
+                }
+            }
         }
+
+        // 🔊 Read-aloud FAB
+        SpeakerFab(
+            textToRead = readText,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 16.dp, bottom = 80.dp)
+        )
     }
-}}
+}
