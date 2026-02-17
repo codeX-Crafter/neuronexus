@@ -126,6 +126,11 @@ fun NarrativeRecallScreen(navController: NavController) {
             }
         }
 
-        CustomBottomBar()
+        CustomBottomBar(
+            onHomeClick = { navController.navigate("dashboard") },
+            onTasksClick = { navController.navigate("tasks") },
+            onSettingsClick = { /* TODO: navigate to settings */ },
+            onShareClick = { navController.navigate("community") }
+        )
     }
 }
