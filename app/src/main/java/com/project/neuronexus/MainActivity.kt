@@ -12,6 +12,7 @@ import com.project.neuronexus.ui.VoiceTaskScreen
 import com.project.neuronexus.ui.VoiceTaskViewModel
 import com.project.neuronexus.ui.dashboard.NeuroNexusDashboard
 import com.project.neuronexus.ui.tasks.TasksScreen
+import com.project.neuronexus.ui.tasks.MemoryMatchScreen
 import com.project.neuronexus.ui.theme.NeuroNexusTheme
 
 class MainActivity : ComponentActivity() {
@@ -47,6 +48,11 @@ class MainActivity : ComponentActivity() {
                     // -------- TASK LIST --------
                     composable("tasks") {
                         TasksScreen(navController = navController)
+                    }
+
+                    // -------- MEMORY MATCH --------
+                    composable("memory_match") {
+                        MemoryMatchScreen(navController)
                     }
 
                     // -------- VOICE TASK --------
