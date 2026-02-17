@@ -19,6 +19,7 @@ import com.project.neuronexus.ui.tasks.NarrativeRecallScreen
 import com.project.neuronexus.ui.tasks.StoryScreen
 import com.project.neuronexus.ui.tasks.RecallPhaseScreen
 import com.project.neuronexus.ui.tasks.RecallQuestionScreen
+import com.project.neuronexus.ui.tasks.RecallResultScreen
 
 class MainActivity : ComponentActivity() {
 
@@ -81,6 +82,11 @@ class MainActivity : ComponentActivity() {
                     composable("recall_question") {
                         RecallQuestionScreen(navController)
                     }
+                    composable("recall_result/{score}") { backStackEntry ->
+                        val score = backStackEntry.arguments?.getString("score")?.toInt() ?: 0
+                        RecallResultScreen(navController, score)
+                    }
+
 
 
                     // -------- COMMUNITY PAGE --------
