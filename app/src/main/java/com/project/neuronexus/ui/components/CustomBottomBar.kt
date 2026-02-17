@@ -28,7 +28,7 @@ fun CustomBottomBar() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .navigationBarsPadding() // 👈 space for system navbar
+//            .navigationBarsPadding()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clip(RoundedCornerShape(24.dp))
             .background(Color(0xFFD1C4E9))
@@ -36,7 +36,7 @@ fun CustomBottomBar() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp), // 👈 reduced height
+                .padding(vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -72,7 +72,7 @@ fun BottomBarIcon(
 ) {
     Box(
         modifier = Modifier
-            .size(56.dp) // 👈 slightly smaller circle
+            .size(56.dp)
             .clip(CircleShape)
             .background(
                 if (isSelected) Color(0xFFB39DDB) else Color.Transparent

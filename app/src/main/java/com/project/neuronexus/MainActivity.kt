@@ -8,6 +8,12 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.FabPosition
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import com.project.neuronexus.ui.VoiceTaskScreen
 import com.project.neuronexus.ui.VoiceTaskViewModel
 import com.project.neuronexus.ui.dashboard.NeuroNexusDashboard
@@ -49,7 +55,6 @@ class MainActivity : ComponentActivity() {
                     composable("tasks") {
                         TasksScreen(navController = navController)
                     }
-
                     // -------- MEMORY MATCH --------
                     composable("memory_match") {
                         MemoryMatchScreen(navController)
