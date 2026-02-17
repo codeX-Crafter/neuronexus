@@ -1,6 +1,7 @@
 package com.project.neuronexus.ui.tasks
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -8,7 +9,7 @@ import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,8 +20,70 @@ import androidx.navigation.NavController
 import com.project.neuronexus.ui.components.CustomBottomBar
 import com.project.neuronexus.ui.components.NeuroTopBar
 
+// Data model
+data class RecallQuestion(
+    val question: String,
+    val options: List<String>,
+    val correctAnswer: String
+)
+
 @Composable
 fun RecallQuestionScreen(navController: NavController) {
+
+    // All questions
+    val questions = listOf(
+        RecallQuestion(
+            "1. Who found the puppy?",
+            listOf("Riya", "Maya", "Sita", "Nita"),
+            "Riya"
+        ),
+        RecallQuestion(
+            "2. Where did Riya find the puppy?",
+            listOf(
+                "At her school",
+                "Near the park",
+                "At the market",
+                "In her house"
+            ),
+            "Near the park"
+        ),
+        RecallQuestion(
+            "3. What did Riya give the puppy?",
+            listOf(
+                "Milk",
+                "Bread",
+                "Biscuits and a warm place",
+                "Water only"
+            ),
+            "Biscuits and a warm place"
+        ),
+        RecallQuestion(
+            "4. What did Riya do the next day?",
+            listOf(
+                "Took the puppy to school",
+                "Sold the puppy",
+                "Made posters",
+                "Left the puppy in the park"
+            ),
+            "Made posters "
+        ),
+        RecallQuestion(
+            "5. Who came in the evening?",
+            listOf(
+                "A doctor",
+                "A teacher",
+                "A young boy who was the owner",
+                "A police officer"
+            ),
+            "A young boy who was the owner"
+        )
+    )
+
+    var currentIndex by remember { mutableStateOf(0) }
+    var selectedAnswer by remember { mutableStateOf<String?>(null) }
+    var score by remember { mutableStateOf(0) }
+
+    val currentQuestion = questions[currentIndex]
 
     Column(
         modifier = Modifier
@@ -47,7 +110,7 @@ fun RecallQuestionScreen(navController: NavController) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "1. Who found the puppy?",
+                    text = currentQuestion.question,
                     modifier = Modifier.padding(16.dp),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium
@@ -57,10 +120,13 @@ fun RecallQuestionScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             // Answer options
-            AnswerOption("Riya")
-            AnswerOption("Maya")
-            AnswerOption("Sita")
-            AnswerOption("Nita")
+            currentQuestion.options.forEach { option ->
+                AnswerOption(
+                    text = option,
+                    isSelected = selectedAnswer == option,
+                    onClick = { selectedAnswer = option }
+                )
+            }
 
             Spacer(modifier = Modifier.height(30.dp))
 
@@ -69,14 +135,8 @@ fun RecallQuestionScreen(navController: NavController) {
                 horizontalArrangement = Arrangement.spacedBy(20.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
-                CircleButton(
-                    icon = Icons.Default.Pause
-                )
-
-                CircleButton(
-                    icon = Icons.Default.Mic
-                )
+                CircleButton(icon = Icons.Default.Pause)
+                CircleButton(icon = Icons.Default.Mic)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -91,9 +151,24 @@ fun RecallQuestionScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Next button
+            // Next / Finish button
             Button(
-                onClick = { /* next question */ },
+                onClick = {
+                    // Check if correct
+                    if (selectedAnswer == currentQuestion.correctAnswer) {
+                        score++
+                    }
+
+                    if (currentIndex < questions.lastIndex) {
+                        currentIndex++
+                        selectedAnswer = null
+                    } else {
+                        // Navigate to result screen with score
+                        navController.navigate("recall_result/$score")
+                    }
+                }
+                ,
+                enabled = selectedAnswer != null,
                 shape = RoundedCornerShape(50),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFFB39DDB)
@@ -103,7 +178,7 @@ fun RecallQuestionScreen(navController: NavController) {
                     .height(56.dp)
             ) {
                 Text(
-                    text = "NEXT",
+                    text = if (currentIndex == questions.lastIndex) "FINISH" else "NEXT",
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
@@ -111,7 +186,7 @@ fun RecallQuestionScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Sound FAB bottom-right
+            // Sound FAB
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
@@ -135,22 +210,34 @@ fun RecallQuestionScreen(navController: NavController) {
             onTasksClick = { navController.navigate("tasks") },
             onSettingsClick = { /* TODO: navigate to settings */ },
             onShareClick = { navController.navigate("community") }
-        )    }
+        )
+    }
 }
 
 @Composable
-fun AnswerOption(text: String) {
+fun AnswerOption(
+    text: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
     Card(
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFE0E0E0)),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected)
+                Color(0xFFB39DDB)
+            else
+                Color(0xFFE0E0E0)
+        ),
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 6.dp)
+            .clickable { onClick() }
     ) {
         Text(
             text = text,
             modifier = Modifier.padding(16.dp),
-            fontSize = 16.sp
+            fontSize = 16.sp,
+            color = if (isSelected) Color.White else Color.Black
         )
     }
 }
